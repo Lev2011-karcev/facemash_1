@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Голосование</title>
+    <style>
+        body { font-family: sans-serif; text-align: center; }
+        .container { display: flex; justify-content: center; gap: 50px; margin-top: 30px; }
+        .person { display: flex; flex-direction: column; align-items: center; }
+        img { max-width: 300px; border-radius: 10px; box-shadow: 0 0 10px rgba(0,0,0,0.3); }
+        button { margin-top: 10px; padding: 10px 20px; font-size: 16px; cursor: pointer; }
+    </style>
+</head>
+<body>
+<h1>Кто лучше?</h1>
+<div class="container">
+    <div class="person" id="p1">
+        <img src="" alt="">
+        <button>Это лучше</button>
+    </div>
+    <div class="person" id="p2">
+        <img src="" alt="">
+        <button>Это лучше</button>
+    </div>
+</div>
+
+<script>
+    let currentPair = [];
+
+    async function loadPair() {
+        const res = await fetch('/pair');
+        const pair = await res.json();
+        currentPair = pair;
+
+        document.querySelector('#p1 img').src = pair[0].base64Photo;
+        document.querySelector('#p1 img').alt = pair[0].name;
+        document.querySelector('#p1 button').onclick = () => vote(pair[0].id, pair[1].id);
+
+        document.querySelector('#p2 img').src = pair[1].base64Photo;
+        document.querySelector('#p2 img').alt = pair[1].name;
+        document.querySelector('#p2 button').onclick = () => vote(pair[1].id, pair[0].id);
+    }
+
+    async function vote(winnerId, loserId) {
+        const formData = new FormData();
+        formData.append('winnerId', winnerId);
+        formData.append('loserId', loserId);
+
+        const res = await fetch('/NewElo', {
+            method: 'POST',
+            body: formData
+        });
+        const newPair = await res.json();
+    currentPair = newPair;
+
+    document.querySelector('#p1 img').src = newPair[0].base64Photo;
+    document.querySelector('#p1 img').alt = newPair[0].name;
+    document.querySelector('#p1 button').onclick = () => vote(newPair[0].id, newPair[1].id);
+
+    document.querySelector('#p2 img').src = newPair[1].base64Photo;
+    document.querySelector('#p2 img').alt = newPair[1].name;
+    document.querySelector('#p2 button').onclick = () => vote(newPair[1].id, newPair[0].id);
+}
+
+loadPair();
+</script>
+</body>
+</html>

@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Админ — Добавить человека</title>
+    <style>
+        body {
+            font-family: sans-serif;
+            margin: 0;
+            padding: 0;
+            background: #f4f4f4;
+        }
+        .container {
+            max-width: 500px;
+            margin: auto;
+            padding: 15px;
+            background: white;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+            border-radius: 8px;
+            margin-top: 20px;
+        }
+        h1 {
+            font-size: 1.4em;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        input, button {
+            width: 100%;
+            padding: 12px;
+            margin-top: 10px;
+            font-size: 16px;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+            box-sizing: border-box;
+        }
+        button {
+            background: #4CAF50;
+            color: white;
+            border: none;
+            font-weight: bold;
+        }
+        button:hover {
+            background: #45a049;
+        }
+        .preview {
+            margin-top: 15px;
+            text-align: center;
+        }
+        .preview img {
+            max-width: 100%;
+            border-radius: 8px;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h1>Добавить нового человека</h1>
+    <form id="addPersonForm" enctype="multipart/form-data">
+        <input type="text" name="name" placeholder="Имя" required>
+        <input type="text" name="elo" placeholder="elo" required>
+        <input type="file" name="file" accept="image/*" required onchange="previewImage(event)">
+        <div class="preview" id="preview"></div>
+        <button type="submit">Добавить</button>
+        <button type="button" onclick="window.location.href='/admin/persons'">
+            Посмотреть всех людей
+        </button>
+    </form>
+</div>
+
+<script>
+    function previewImage(event) {
+        const previewDiv = document.getElementById('preview');
+        previewDiv.innerHTML = '';
+        const img = document.createElement('img');
+        img.src = URL.createObjectURL(event.target.files[0]);
+        previewDiv.appendChild(img);
+    }
+
+    document.getElementById('addPersonForm').addEventListener('submit', async function (e) {
+        e.preventDefault();
+        const formData = new FormData(this);
+
+        const response = await fetch('/admin/newperson', {
+            method: 'POST',
+            body: formData
+        });
+
+        const result = await response.text();
+        alert(result);
+    });
+</script>
+</body>
+</html>

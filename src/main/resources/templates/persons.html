@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="ru" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Список людей</title>
+    <style>
+        body { font-family: sans-serif; background: #f4f4f4; }
+        table {
+            border-collapse: collapse;
+            width: 80%;
+            margin: 20px auto;
+            background: white;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        th, td {
+            padding: 10px;
+            border: 1px solid #ddd;
+            text-align: center;
+        }
+        th { background: #4CAF50; color: white; }
+        img { max-width: 100px; border-radius: 5px; }
+    </style>
+</head>
+<body>
+<h1 style="text-align:center;">Список всех людей</h1>
+<table>
+    <tr>
+        <th>ID</th>
+        <th>Имя</th>
+        <th>Фото</th>
+    </tr>
+    <tr th:each="p : ${persons}">
+        <td th:text="${p.id}"></td>
+        <td th:text="${p.name}"></td>
+        <td><img th:src="${p.base64Photo}" alt="Фото"></td>
+    </tr>
+</table>
+<div style="text-align:center; margin-bottom:20px;">
+    <button onclick="window.location.href='/admin'">Назад</button>
+</div>
+</body>
+</html>
