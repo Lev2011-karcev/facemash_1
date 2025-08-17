@@ -48,4 +48,7 @@ public class ServicePerson {
     public void setNewElo(Long Id, int elo){
         repo.setNewElo(Id, elo);
     }
+    public int sizeDB(){
+        return repo.findAll().size();
+    }
 }

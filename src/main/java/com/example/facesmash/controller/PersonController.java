@@ -14,10 +14,19 @@ public class PersonController {
     @Autowired
     private ServicePerson serv;
 
-    private List<Person> getRandomPair() {
+    private List<Person> getRandomPair(long id_lose){
+        Random random = new Random();
+        HashSet<Integer> pare_0 = new HashSet<>();
+        while(pare_0.size() < 2){
+            int randomNumber = random.nextInt(serv.sizeDB());
+            if (randomNumber != (int) id_lose){
+                pare_0.add(randomNumber);
+            }
+        }
+        ArrayList<Integer> pare_1 = new ArrayList<>(pare_0);
         List<Person> allPersons = serv.getAllPersons();
-        Collections.shuffle(allPersons);
-        List<Person> pair = allPersons.subList(0, 2);
+
+        List<Person> pair = allPersons.subList(pare_1.getFirst(), pare_1.get(1));
 
         // Кодируем фото
         pair.forEach(p -> {
@@ -29,10 +38,31 @@ public class PersonController {
 
         return pair;
     }
+    private List<Person> getRandomPair(){
+        Random random = new Random();
+        HashSet<Integer> pare_0 = new HashSet<>();
+        while(pare_0.size() < 2){
+            int randomNumber = random.nextInt(serv.sizeDB());
+            pare_0.add(randomNumber);
+        }
+        ArrayList<Integer> pare_1 = new ArrayList<>(pare_0);
+        List<Person> allPersons = serv.getAllPersons();
 
+        List<Person> pair = allPersons.subList(pare_1.getFirst(), pare_1.get(1));
+
+        // Кодируем фото
+        pair.forEach(p -> {
+            if (p.getPhoto() != null && p.getPhoto().length > 0) {
+                String base64 = Base64.getEncoder().encodeToString(p.getPhoto());
+                p.setBase64Photo("data:image/jpeg;base64," + base64);
+            }
+        });
+
+        return pair;
+    }
     @GetMapping("/pair")
-    public List<Person> getPair() {
-        return getRandomPair();
+    public List<Person> getPair(long id_win) {
+        return getRandomPair(id_win);
     }
 
     @PostMapping("/NewElo")

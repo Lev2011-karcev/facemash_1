@@ -18,7 +18,13 @@ public class SecurityConfig {
 
     // IP админов
     public static final Set<String> ADMIN_IPS = Set.of(
-            "..."
+            "127.0.0.1",
+            "192.168.1.110",
+            "192.168.1.1",
+            "192.168.56.1",
+            "212.220.235.176",
+            "0:0:0:0:0:0:0:1",
+            "192.168.1.121"
     );
 
     @Bean
